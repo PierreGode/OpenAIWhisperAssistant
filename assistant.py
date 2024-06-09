@@ -13,14 +13,6 @@ while True:
         file=audio_file
     )
     print(transcription.text)
-  
-    response = client.chat.completions.create(
-        model='gpt-4o',
-        messages=[
-            {"role": "system", "content": "You are my assistant. Please answer in short sentences."},
-            {"role": "user", "content": f"Please answer: {transcription.text}"},
-        ]
-    )
 
     response = client.chat.completions.create(
         model='gpt-4o',
@@ -29,6 +21,7 @@ while True:
             {"role": "user", "content": f"Please answer: {transcription.text}"},
         ]
     )
+
     print(response.choices[0].message.content)
     response = client.audio.speech.create(
     model="tts-1",
