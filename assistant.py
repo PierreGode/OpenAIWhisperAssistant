@@ -27,24 +27,27 @@ def play_audio_with_pygame(file_path):
     pygame.mixer.quit()
 
 def play_audio_with_alsa(file_path):
-    import alsaaudio
-    import wave
+    try:
+        import alsaaudio
+        import wave
 
-    wf = wave.open(file_path, 'rb')
-    device = alsaaudio.PCM(alsaaudio.PCM_PLAYBACK)
-    device.setchannels(wf.getnchannels())
-    device.setrate(wf.getframerate())
-    device.setformat(alsaaudio.PCM_FORMAT_S16_LE)
-    device.setperiodsize(320)
-    data = wf.readframes(320)
-    audio_data = []
-    while data:
-        audio_data.append(data)
+        wf = wave.open(file_path, 'rb')
+        device = alsaaudio.PCM(alsaaudio.PCM_PLAYBACK)
+        device.setchannels(wf.getnchannels())
+        device.setrate(wf.getframerate())
+        device.setformat(alsaaudio.PCM_FORMAT_S16_LE)
+        device.setperiodsize(320)
         data = wf.readframes(320)
-    time.sleep(0.5)
-    for chunk in audio_data:
-        device.write(chunk)
-    wf.close()
+        audio_data = []
+        while data:
+            audio_data.append(data)
+            data = wf.readframes(320)
+        time.sleep(0.5)
+        for chunk in audio_data:
+            device.write(chunk)
+        wf.close()
+    except Exception as e:
+        print(f"Error playing audio with ALSA: {e}")
 
 is_windows = platform.system() == "Windows"
 
